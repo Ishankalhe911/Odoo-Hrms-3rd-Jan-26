@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logging out...</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<h2>Logging out...</h2>
+
+<script>
+(async () => {
+  try {
+    const res = await fetch("../backend/index.php?module=auth&action=logout", {
+      method: "POST",
+      credentials: "include"
+    });
+
+    if (!res.ok) throw new Error("Logout failed");
+
+    // redirect after successful logout
+    window.location.href = "index.html";
+  } catch (err) {
+    console.error(err);
+    document.body.innerHTML += "<p>Logout failed. Please try again.</p>";
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dayflow HRMS - Sign Up</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<h2>Dayflow HRMS - Sign Up</h2>
+
+<form id="signupForm">
+  <input type="text" id="name" placeholder="Full Name" required>
+  <input type="email" id="email" placeholder="Email" required>
+  <input type="password" id="password" placeholder="Password" required>
+  <select id="role">
+    <option value="EMPLOYEE">Employee</option>
+    <option value="HR">HR</option>
+    <option value="ADMIN">Admin</option>
+  </select>
+  <button type="submit">Sign Up</button>
+  <div id="msg"></div>
+</form>
+
+<p>Already have an account? <a href="index.html">Login</a></p>
+
+<script>
+const BASE_URL = "../backend/index.php";
+
+document.getElementById("signupForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const f = new FormData();
+  f.append("name", document.getElementById("name").value);
+  f.append("email", document.getElementById("email").value);
+  f.append("password", document.getElementById("password").value);
+  f.append("role", document.getElementById("role").value);
+
+  const res = await fetch(`${BASE_URL}?module=auth&action=register`, {
+    method: "POST",
+    body: f
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    msg.innerText = text;
+    return;
+  }
+
+  msg.innerText = "Account created! Redirecting to login...";
+  setTimeout(() => {
+    location.href = "index.html";
+  }, 1500);
+});
+</script>
+</body>
+</html>

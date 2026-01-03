@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Apply Leave</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<h2>Apply Leave</h2>
+
+<form id="leaveForm">
+  <input type="date" id="start" required>
+  <input type="date" id="end" required>
+  <select id="type">
+    <option value="PAID">Paid</option>
+    <option value="SICK">Sick</option>
+    <option value="UNPAID">Unpaid</option>
+  </select>
+  <button>Apply</button>
+  <div id="msg"></div>
+</form>
+
+<script src="../assets/js/leave.js"></script>
+</body>
+</html>
