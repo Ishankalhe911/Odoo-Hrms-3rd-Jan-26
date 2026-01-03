@@ -1,0 +1,11 @@
+# Ignore sensitive config
+backend/config/config.php
+
+# Ignore uploads if any
+uploads/
+*.log
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/
