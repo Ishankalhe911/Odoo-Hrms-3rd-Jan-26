@@ -2,35 +2,19 @@
 require_once '../config/db.php';
 require_once '../auth/middleware.php';
 
-requireRole(['ADMIN']); // Only admin can create users
+requireRole(['ADMIN']);
 
-$email    = trim($_POST['email'] ?? '');
-$password = $_POST['password'] ?? '';
-$role     = $_POST['role'] ?? 'EMPLOYEE';
+$email=$_POST['email'];
+$password=$_POST['password'];
+$role=$_POST['role'];
+$companyId=$_SESSION['company_id'];
 
-if (!$email || !$password) {
-    http_response_code(400);
-    exit('Email and password required');
-}
+$hash=password_hash($password,PASSWORD_DEFAULT);
 
-// Prevent duplicate users
-$stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
-$stmt->execute([$email]);
-if ($stmt->fetch()) {
-    http_response_code(409);
-    exit('User already exists');
-}
-
-// Secure password hash
-$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-$stmt = $pdo->prepare("
-    INSERT INTO users (email, password_hash, role)
-    VALUES (?, ?, ?)
+$stmt=$pdo->prepare("
+    INSERT INTO users (email,password_hash,role,company_id)
+    VALUES (?,?,?,?)
 ");
-$stmt->execute([$email, $hashedPassword, $role]);
+$stmt->execute([$email,$hash,$role,$companyId]);
 
-echo json_encode([
-    'status' => 'success',
-    'message' => 'User created successfully'
-]);
+echo json_encode(['status'=>'user_created']);

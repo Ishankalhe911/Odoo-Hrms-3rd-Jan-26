@@ -4,28 +4,16 @@ require_once '../auth/middleware.php';
 
 requireRole(['EMPLOYEE']);
 
-$userId = $_SESSION['user_id'];
-$start = $_POST['start_date'];
-$end   = $_POST['end_date'];
-$type  = $_POST['type'];
-
-$stmt = $pdo->prepare("
-    SELECT COUNT(*) FROM leaves
-    WHERE user_id = ?
-      AND status = 'APPROVED'
-      AND NOT (end_date < ? OR start_date > ?)
+$stmt=$pdo->prepare("
+    INSERT INTO leave_requests
+    (employee_id,leave_type_id,start_date,end_date)
+    VALUES (?,?,?,?)
 ");
-$stmt->execute([$userId, $start, $end]);
+$stmt->execute([
+    $_SESSION['employee_id'],
+    $_POST['leave_type_id'],
+    $_POST['start_date'],
+    $_POST['end_date']
+]);
 
-if ($stmt->fetchColumn() > 0) {
-    http_response_code(400);
-    exit('Overlapping approved leave exists');
-}
-
-$stmt = $pdo->prepare("
-    INSERT INTO leaves (user_id, start_date, end_date, type, status)
-    VALUES (?, ?, ?, ?, 'PENDING')
-");
-$stmt->execute([$userId, $start, $end, $type]);
-
-echo json_encode(['status' => 'applied']);
+echo json_encode(['status'=>'leave_applied']);

@@ -1,9 +1,8 @@
 <?php
-function auditLog($userId, $action, $details) {
+function auditLog($employeeId,$companyId,$action){
     global $pdo;
-    $stmt = $pdo->prepare("
-        INSERT INTO audit_logs (user_id, action, details)
-        VALUES (?, ?, ?)
-    ");
-    $stmt->execute([$userId, $action, $details]);
+    $pdo->prepare("
+        INSERT INTO audit_logs (employee_id,company_id,action)
+        VALUES (?,?,?)
+    ")->execute([$employeeId,$companyId,$action]);
 }

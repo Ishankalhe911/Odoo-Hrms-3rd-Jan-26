@@ -1,11 +1,53 @@
-# Ignore sensitive config
+# ===============================
+# Sensitive configuration
+# ===============================
 backend/config/config.php
+backend/config/db.php
 
-# Ignore uploads if any
+# ===============================
+# Environment / secrets
+# ===============================
+.env
+*.env
+
+# ===============================
+# Uploads / user files
+# ===============================
 uploads/
-*.log
+backend/uploads/
 
-# OS / IDE
+# ===============================
+# Logs
+# ===============================
+*.log
+logs/
+backend/logs/
+
+# ===============================
+# OS files
+# ===============================
 .DS_Store
+Thumbs.db
+
+# ===============================
+# IDE / Editor settings
+# ===============================
 .vscode/
 .idea/
+*.swp
+
+# ===============================
+# Vendor (if added later)
+# ===============================
+vendor/
+
+# ===============================
+# Cache / temp
+# ===============================
+cache/
+tmp/
+
+# ===============================
+# PHPUnit (if ever added)
+# ===============================
+.phpunit.result.cache

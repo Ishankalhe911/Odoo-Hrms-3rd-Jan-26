@@ -3,21 +3,13 @@ require_once '../config/db.php';
 require_once '../auth/middleware.php';
 require_once '../audit/log.php';
 
-requireRole(['HR', 'ADMIN']);
+requireRole(['ADMIN','HR']);
 
-$leaveId = $_POST['leave_id'];
-$action  = $_POST['action']; // APPROVED / REJECTED
+$pdo->prepare("
+    UPDATE leave_requests
+    SET status='APPROVED',approved_at=NOW()
+    WHERE request_id=?
+")->execute([$_POST['request_id']]);
 
-$pdo->beginTransaction();
-
-$stmt = $pdo->prepare("
-    UPDATE leaves 
-    SET status = ?, approved_at = NOW()
-    WHERE id = ? AND status = 'PENDING'
-");
-$stmt->execute([$action, $leaveId]);
-
-auditLog($_SESSION['user_id'], "Leave $action", "LeaveID:$leaveId");
-
-$pdo->commit();
-echo json_encode(['status' => 'done']);
+auditLog($_SESSION['employee_id'],$_SESSION['company_id'],'Leave Approved');
+echo json_encode(['status'=>'approved']);
