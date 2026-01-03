@@ -1,20 +1,1261 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Dayflow HRMS - Login</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-bg: #ecf0f1;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .sidebar {
+            background-color: var(--primary-color);
+            color: white;
+            min-height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+            width: 250px;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .nav-link {
+            color: #bdc3c7 !important;
+            padding: 12px 20px;
+            margin: 5px 0;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--secondary-color);
+            color: white !important;
+        }
+        
+        .nav-link i {
+            width: 25px;
+            text-align: center;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+        }
+        
+        .badge-admin { background-color: #e74c3c; }
+        .badge-hr { background-color: #f39c12; }
+        .badge-employee { background-color: #2ecc71; }
+        .badge-pending { background-color: #f39c12; }
+        .badge-approved { background-color: #2ecc71; }
+        .badge-rejected { background-color: #e74c3c; }
+        
+        #loginForm, #registerForm {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: white;
+        }
+        
+        .user-info {
+            background: var(--light-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .attendance-btn {
+            font-size: 1.2em;
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin: 10px;
+        }
+        
+        .clock-in { background-color: #2ecc71; color: white; }
+        .clock-out { background-color: #e74c3c; color: white; }
+        
+        #mainContent {
+            display: none;
+        }
+    </style>
 </head>
 <body>
+    <!-- Login Form -->
+    <div id="loginForm">
+        <h2 class="text-center mb-4">HRMS Login</h2>
+        <form id="loginFormElement">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+            <p class="text-center mt-3">
+                <a href="#" onclick="showRegister()">Register as new company</a>
+            </p>
+        </form>
+    </div>
 
-<h2>Dayflow HRMS</h2>
+    <!-- Register Form -->
+    <div id="registerForm" style="display: none;">
+        <h2 class="text-center mb-4">Register Company</h2>
+        <form id="registerFormElement">
+            <div class="mb-3">
+                <label for="companyName" class="form-label">Company Name</label>
+                <input type="text" class="form-control" id="companyName" required>
+            </div>
+            <div class="mb-3">
+                <label for="adminEmail" class="form-label">Admin Email</label>
+                <input type="email" class="form-control" id="adminEmail" required>
+            </div>
+            <div class="mb-3">
+                <label for="adminPassword" class="form-label">Admin Password</label>
+                <input type="password" class="form-control" id="adminPassword" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Register & Create Admin</button>
+            <p class="text-center mt-3">
+                <a href="#" onclick="showLogin()">Back to Login</a>
+            </p>
+        </form>
+    </div>
 
-<form id="loginForm">
-  <input type="email" id="email" placeholder="Email" required>
-  <input type="password" id="password" placeholder="Password" required>
-  <button type="submit">Login</button>
-  <div id="msg"></div>
-</form>
+    <!-- Main Application -->
+    <div id="mainContent">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="text-center mb-4">
+                <h3 id="companyNameDisplay">HRMS</h3>
+                <small class="text-muted">Human Resource Management</small>
+            </div>
+            
+            <ul class="nav flex-column" id="mainNav">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" onclick="showDashboard()">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                
+                <!-- Admin Only -->
+                <li class="nav-item admin-only" style="display: none;">
+                    <a class="nav-link" href="#" onclick="showCompanyManagement()">
+                        <i class="fas fa-building"></i> Company
+                    </a>
+                </li>
+                
+                <!-- Admin/HR -->
+                <li class="nav-item admin-hr-only" style="display: none;">
+                    <a class="nav-link" href="#" onclick="showUserManagement()">
+                        <i class="fas fa-users"></i> Users
+                    </a>
+                </li>
+                
+                <!-- Admin/HR -->
+                <li class="nav-item admin-hr-only" style="display: none;">
+                    <a class="nav-link" href="#" onclick="showEmployeeManagement()">
+                        <i class="fas fa-user-tie"></i> Employees
+                    </a>
+                </li>
+                
+                <!-- All Authenticated -->
+                <li class="nav-item authenticated-only" style="display: none;">
+                    <a class="nav-link" href="#" onclick="showAttendance()">
+                        <i class="fas fa-clock"></i> Attendance
+                    </a>
+                </li>
+                
+                <li class="nav-item authenticated-only" style="display: none;">
+                    <a class="nav-link" href="#" onclick="showLeaveManagement()">
+                        <i class="fas fa-calendar-alt"></i> Leave
+                    </a>
+                </li>
+                
+                <!-- Admin Only -->
+                <li class="nav-item admin-only" style="display: none;">
+                    <a class="nav-link" href="#" onclick="showPayroll()">
+                        <i class="fas fa-money-check-alt"></i> Payroll
+                    </a>
+                </li>
+                
+                <!-- All Authenticated -->
+                <li class="nav-item authenticated-only" style="display: none;">
+                    <a class="nav-link" href="#" onclick="showProfile()">
+                        <i class="fas fa-user"></i> Profile
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="position-absolute bottom-0 start-0 w-100 p-3">
+                <div class="user-info">
+                    <small>Logged in as: <span id="loggedInEmail"></span></small><br>
+                    <small>Role: <span id="loggedInRole" class="badge"></span></small>
+                </div>
+                <button class="btn btn-outline-light w-100" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
 
-<script src="assets/js/auth.js"></script>
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Dashboard -->
+            <div id="dashboardView">
+                <h2 class="mb-4">Dashboard</h2>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h3 id="totalEmployees">0</h3>
+                            <p>Total Employees</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <h3 id="presentToday">0</h3>
+                            <p>Present Today</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <h3 id="pendingLeaves">0</h3>
+                            <p>Pending Leaves</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                            <h3 id="thisMonthPayroll">0</h3>
+                            <p>This Month Payroll</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Recent Attendance</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="recentAttendance"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Quick Actions</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="quickActions"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Company Management (Admin Only) -->
+            <div id="companyView" style="display: none;">
+                <h2 class="mb-4">Company Management</h2>
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Company Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="companyInfo"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Management (Admin/HR) -->
+            <div id="userView" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>User Management</h2>
+                    <button class="btn btn-primary" onclick="showAddUserModal()">
+                        <i class="fas fa-plus"></i> Add User
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Employee ID</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Employee Management -->
+            <div id="employeeView" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Employee Management</h2>
+                    <button class="btn btn-primary" onclick="showAddEmployeeModal()">
+                        <i class="fas fa-plus"></i> Add Employee
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Employee ID</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Department</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeesTable">
+                            <!-- Employees will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Attendance -->
+            <div id="attendanceView" style="display: none;">
+                <h2 class="mb-4">Attendance</h2>
+                <div class="card text-center mb-4">
+                    <div class="card-body">
+                        <h4 id="currentTime"></h4>
+                        <p id="currentDate"></p>
+                        <div class="mt-3">
+                            <button class="btn btn-lg clock-in attendance-btn" onclick="clockInOut()">
+                                <i class="fas fa-sign-in-alt"></i> Clock In
+                            </button>
+                            <button class="btn btn-lg clock-out attendance-btn" onclick="clockInOut()">
+                                <i class="fas fa-sign-out-alt"></i> Clock Out
+                            </button>
+                        </div>
+                        <div id="attendanceStatus" class="mt-3"></div>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <h5>Attendance History</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Check In</th>
+                                <th>Check Out</th>
+                                <th>Work Hours</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceHistory">
+                            <!-- Attendance history will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Leave Management -->
+            <div id="leaveView" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Leave Management</h2>
+                    <button class="btn btn-primary" onclick="showApplyLeaveModal()">
+                        <i class="fas fa-plus"></i> Apply Leave
+                    </button>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Request ID</th>
+                                        <th>Type</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaveRequestsTable">
+                                    <!-- Leave requests will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Leave Balance</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="leaveBalance"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payroll (Admin Only) -->
+            <div id="payrollView" style="display: none;">
+                <h2 class="mb-4">Payroll Management</h2>
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Generate Payroll</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="generatePayrollForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Month</label>
+                                        <input type="month" class="form-control" id="payrollMonth" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Salary Structure</label>
+                                        <select class="form-select" id="salaryStructure" required>
+                                            <option value="1">Basic Structure</option>
+                                            <option value="2">Advanced Structure</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Generate Payroll</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="table-container mt-4">
+                    <h5>Payroll History</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Payroll ID</th>
+                                <th>Month</th>
+                                <th>Employee Count</th>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payrollHistory">
+                            <!-- Payroll history will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Profile -->
+            <div id="profileView" style="display: none;">
+                <h2 class="mb-4">My Profile</h2>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <i class="fas fa-user-circle fa-5x text-primary"></i>
+                                </div>
+                                <h4 id="profileEmail"></h4>
+                                <span id="profileRole" class="badge mb-3"></span>
+                                <p id="profileDepartment"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Personal Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <th>Employee ID</th>
+                                            <td id="profileEmployeeId"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Company ID</th>
+                                            <td id="profileCompanyId"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Email</th>
+                                            <td id="profileEmail2"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Role</th>
+                                            <td id="profileRole2"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" id="addUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addUserForm">
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="newUserEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" id="newUserPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Role</label>
+                            <select class="form-select" id="newUserRole" required>
+                                <option value="ADMIN">Admin</option>
+                                <option value="HR">HR</option>
+                                <option value="EMPLOYEE">Employee</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create User</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <input type="hidden" id="editUserId">
+                        <div class="mb-3">
+                            <label class="form-label">Role</label>
+                            <select class="form-select" id="editUserRole" required>
+                                <option value="ADMIN">Admin</option>
+                                <option value="HR">HR</option>
+                                <option value="EMPLOYEE">Employee</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">New Password (leave blank to keep current)</label>
+                            <input type="password" class="form-control" id="editUserPassword">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update User</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addEmployeeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Employee</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addEmployeeForm">
+                        <div class="mb-3">
+                            <label class="form-label">User ID</label>
+                            <input type="number" class="form-control" id="employeeUserId" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Department ID</label>
+                            <input type="number" class="form-control" id="employeeDepartmentId" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Employee</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="applyLeaveModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Apply for Leave</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="applyLeaveForm">
+                        <div class="mb-3">
+                            <label class="form-label">Leave Type</label>
+                            <select class="form-select" id="leaveType" required>
+                                <option value="1">Annual Leave</option>
+                                <option value="2">Sick Leave</option>
+                                <option value="3">Maternity Leave</option>
+                                <option value="4">Paternity Leave</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="leaveStartDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="leaveEndDate" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Apply for Leave</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables
+        let currentUser = null;
+        let currentView = 'dashboard';
+        
+        // API Base URL - Update this to match your backend URL
+        const API_BASE = 'http://localhost/backend/index.php';
+        
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+        });
+        
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleTimeString('en-US', { hour12: true });
+            document.getElementById('currentDate').textContent = 
+                now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        
+        // Auth Functions
+        async function login(email, password) {
+            try {
+                const formData = new FormData();
+                formData.append('email', email);
+                formData.append('password', password);
+                
+                const response = await fetch(`${API_BASE}?module=auth&action=login`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) throw new Error('Login failed');
+                
+                const data = await response.json();
+                
+                // Store user info
+                currentUser = {
+                    email: email,
+                    role: data.role || 'EMPLOYEE'
+                };
+                
+                localStorage.setItem('authToken', 'dummy-token');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userRole', currentUser.role);
+                
+                showMainApp();
+                loadDashboard();
+                
+            } catch (error) {
+                alert('Login failed: ' + error.message);
+            }
+        }
+        
+        async function registerCompany(companyName, adminEmail, adminPassword) {
+            try {
+                // First create company
+                const companyFormData = new FormData();
+                companyFormData.append('company_name', companyName);
+                
+                const companyResponse = await fetch(`${API_BASE}?module=admin&action=create_company`, {
+                    method: 'POST',
+                    body: companyFormData
+                });
+                
+                const companyData = await companyResponse.json();
+                
+                if (companyData.status === 'company_created') {
+                    // Then create admin user
+                    const userFormData = new FormData();
+                    userFormData.append('email', adminEmail);
+                    userFormData.append('password', adminPassword);
+                    userFormData.append('role', 'ADMIN');
+                    
+                    // Note: This would need session handling for company_id
+                    // For demo, we'll just show success
+                    alert('Company registered successfully! Please login.');
+                    showLogin();
+                }
+                
+            } catch (error) {
+                alert('Registration failed: ' + error.message);
+            }
+        }
+        
+        function checkAuth() {
+            const token = localStorage.getItem('authToken');
+            const email = localStorage.getItem('userEmail');
+            const role = localStorage.getItem('userRole');
+            
+            if (token && email && role) {
+                currentUser = { email, role };
+                showMainApp();
+                loadDashboard();
+            } else {
+                showLogin();
+            }
+        }
+        
+        function logout() {
+            localStorage.clear();
+            currentUser = null;
+            showLogin();
+        }
+        
+        function showLogin() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'none';
+        }
+        
+        function showRegister() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('mainContent').style.display = 'none';
+        }
+        
+        function showMainApp() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            
+            // Update user info
+            document.getElementById('loggedInEmail').textContent = currentUser.email;
+            document.getElementById('loggedInRole').textContent = currentUser.role;
+            document.getElementById('loggedInRole').className = `badge badge-${currentUser.role.toLowerCase()}`;
+            
+            // Show/hide menu items based on role
+            const adminOnly = document.querySelectorAll('.admin-only');
+            const adminHrOnly = document.querySelectorAll('.admin-hr-only');
+            const authenticatedOnly = document.querySelectorAll('.authenticated-only');
+            
+            adminOnly.forEach(el => el.style.display = currentUser.role === 'ADMIN' ? 'block' : 'none');
+            adminHrOnly.forEach(el => el.style.display = ['ADMIN', 'HR'].includes(currentUser.role) ? 'block' : 'none');
+            authenticatedOnly.forEach(el => el.style.display = 'block');
+        }
+        
+        // View Navigation
+        function showDashboard() {
+            setActiveNav('dashboard');
+            loadDashboard();
+        }
+        
+        function showCompanyManagement() {
+            setActiveNav('company');
+            document.querySelectorAll('[id$="View"]').forEach(el => el.style.display = 'none');
+            document.getElementById('companyView').style.display = 'block';
+            loadCompanyInfo();
+        }
+        
+        function showUserManagement() {
+            setActiveNav('users');
+            document.querySelectorAll('[id$="View"]').forEach(el => el.style.display = 'none');
+            document.getElementById('userView').style.display = 'block';
+            loadUsers();
+        }
+        
+        function showEmployeeManagement() {
+            setActiveNav('employees');
+            document.querySelectorAll('[id$="View"]').forEach(el => el.style.display = 'none');
+            document.getElementById('employeeView').style.display = 'block';
+            loadEmployees();
+        }
+        
+        function showAttendance() {
+            setActiveNav('attendance');
+            document.querySelectorAll('[id$="View"]').forEach(el => el.style.display = 'none');
+            document.getElementById('attendanceView').style.display = 'block';
+            loadAttendance();
+        }
+        
+        function showLeaveManagement() {
+            setActiveNav('leave');
+            document.querySelectorAll('[id$="View"]').forEach(el => el.style.display = 'none');
+            document.getElementById('leaveView').style.display = 'block';
+            loadLeaveRequests();
+        }
+        
+        function showPayroll() {
+            setActiveNav('payroll');
+            document.querySelectorAll('[id$="View"]').forEach(el => el.style.display = 'none');
+            document.getElementById('payrollView').style.display = 'block';
+            loadPayroll();
+        }
+        
+        function showProfile() {
+            setActiveNav('profile');
+            document.querySelectorAll('[id$="View"]').forEach(el => el.style.display = 'none');
+            document.getElementById('profileView').style.display = 'block';
+            loadProfile();
+        }
+        
+        function setActiveNav(view) {
+            currentView = view;
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            const activeLink = Array.from(document.querySelectorAll('.nav-link')).find(link => 
+                link.textContent.toLowerCase().includes(view)
+            );
+            if (activeLink) activeLink.classList.add('active');
+        }
+        
+        // Data Loading Functions
+        async function loadDashboard() {
+            document.querySelectorAll('[id$="View"]').forEach(el => el.style.display = 'none');
+            document.getElementById('dashboardView').style.display = 'block';
+            
+            // Load dashboard stats (mock data for demo)
+            document.getElementById('totalEmployees').textContent = '45';
+            document.getElementById('presentToday').textContent = '38';
+            document.getElementById('pendingLeaves').textContent = '7';
+            document.getElementById('thisMonthPayroll').textContent = '$85,420';
+            
+            // Load quick actions based on role
+            const quickActions = document.getElementById('quickActions');
+            quickActions.innerHTML = '';
+            
+            if (currentUser.role === 'ADMIN') {
+                quickActions.innerHTML = `
+                    <button class="btn btn-primary me-2" onclick="showUserManagement()">
+                        <i class="fas fa-users"></i> Manage Users
+                    </button>
+                    <button class="btn btn-primary me-2" onclick="showPayroll()">
+                        <i class="fas fa-money-bill"></i> Generate Payroll
+                    </button>
+                    <button class="btn btn-primary" onclick="showCompanyManagement()">
+                        <i class="fas fa-cog"></i> Company Settings
+                    </button>
+                `;
+            } else if (currentUser.role === 'HR') {
+                quickActions.innerHTML = `
+                    <button class="btn btn-primary me-2" onclick="showEmployeeManagement()">
+                        <i class="fas fa-user-tie"></i> Manage Employees
+                    </button>
+                    <button class="btn btn-primary" onclick="showLeaveManagement()">
+                        <i class="fas fa-calendar-check"></i> Approve Leaves
+                    </button>
+                `;
+            } else {
+                quickActions.innerHTML = `
+                    <button class="btn btn-primary me-2" onclick="clockInOut()">
+                        <i class="fas fa-clock"></i> Clock In/Out
+                    </button>
+                    <button class="btn btn-primary" onclick="showApplyLeaveModal()">
+                        <i class="fas fa-calendar-plus"></i> Apply Leave
+                    </button>
+                `;
+            }
+        }
+        
+        async function loadUsers() {
+            try {
+                // This would be a real API call in production
+                const mockUsers = [
+                    { user_id: 1, email: 'admin@company.com', role: 'ADMIN', employee_id: 101 },
+                    { user_id: 2, email: 'hr@company.com', role: 'HR', employee_id: 102 },
+                    { user_id: 3, email: 'john@company.com', role: 'EMPLOYEE', employee_id: 103 },
+                    { user_id: 4, email: 'jane@company.com', role: 'EMPLOYEE', employee_id: 104 }
+                ];
+                
+                const tbody = document.getElementById('usersTable');
+                tbody.innerHTML = '';
+                
+                mockUsers.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.user_id}</td>
+                        <td>${user.email}</td>
+                        <td><span class="badge badge-${user.role.toLowerCase()}">${user.role}</span></td>
+                        <td>${user.employee_id || 'N/A'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" onclick="editUser(${user.user_id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+        
+        async function loadEmployees() {
+            // Similar to loadUsers but for employees
+            const mockEmployees = [
+                { employee_id: 101, email: 'john@company.com', role: 'EMPLOYEE', department: 'Engineering' },
+                { employee_id: 102, email: 'jane@company.com', role: 'EMPLOYEE', department: 'Marketing' },
+                { employee_id: 103, email: 'bob@company.com', role: 'EMPLOYEE', department: 'Sales' }
+            ];
+            
+            const tbody = document.getElementById('employeesTable');
+            tbody.innerHTML = '';
+            
+            mockEmployees.forEach(emp => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${emp.employee_id}</td>
+                    <td>${emp.email}</td>
+                    <td><span class="badge badge-${emp.role.toLowerCase()}">${emp.role}</span></td>
+                    <td>${emp.department}</td>
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="viewEmployeeProfile(${emp.employee_id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        async function loadAttendance() {
+            // Mock attendance data
+            const mockAttendance = [
+                { date: '2024-01-15', check_in: '09:00 AM', check_out: '05:00 PM', hours: 8 },
+                { date: '2024-01-14', check_in: '09:15 AM', check_out: '05:30 PM', hours: 8.25 },
+                { date: '2024-01-13', check_in: '08:45 AM', check_out: '04:45 PM', hours: 8 }
+            ];
+            
+            const tbody = document.getElementById('attendanceHistory');
+            tbody.innerHTML = '';
+            
+            mockAttendance.forEach(record => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${record.date}</td>
+                    <td>${record.check_in}</td>
+                    <td>${record.check_out}</td>
+                    <td>${record.hours} hrs</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        async function loadLeaveRequests() {
+            const mockLeaves = [
+                { request_id: 1, type: 'Annual Leave', start_date: '2024-01-20', end_date: '2024-01-25', status: 'PENDING' },
+                { request_id: 2, type: 'Sick Leave', start_date: '2024-01-10', end_date: '2024-01-10', status: 'APPROVED' },
+                { request_id: 3, type: 'Maternity Leave', start_date: '2024-02-01', end_date: '2024-05-01', status: 'PENDING' }
+            ];
+            
+            const tbody = document.getElementById('leaveRequestsTable');
+            tbody.innerHTML = '';
+            
+            mockLeaves.forEach(leave => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${leave.request_id}</td>
+                    <td>${leave.type}</td>
+                    <td>${leave.start_date}</td>
+                    <td>${leave.end_date}</td>
+                    <td><span class="badge badge-${leave.status.toLowerCase()}">${leave.status}</span></td>
+                    <td>
+                        ${currentUser.role !== 'EMPLOYEE' && leave.status === 'PENDING' ? `
+                            <button class="btn btn-sm btn-success" onclick="approveLeave(${leave.request_id})">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        ` : ''}
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Load leave balance
+            document.getElementById('leaveBalance').innerHTML = `
+                <p>Annual Leave: <strong>15 days</strong></p>
+                <p>Sick Leave: <strong>10 days</strong></p>
+                <p>Used This Year: <strong>5 days</strong></p>
+                <p>Remaining: <strong>20 days</strong></p>
+            `;
+        }
+        
+        async function loadProfile() {
+            // Mock profile data
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            document.getElementById('profileEmail2').textContent = currentUser.email;
+            document.getElementById('profileRole').textContent = currentUser.role;
+            document.getElementById('profileRole2').textContent = currentUser.role;
+            document.getElementById('profileRole').className = `badge badge-${currentUser.role.toLowerCase()}`;
+            document.getElementById('profileEmployeeId').textContent = '123';
+            document.getElementById('profileCompanyId').textContent = '456';
+            document.getElementById('profileDepartment').textContent = currentUser.role === 'ADMIN' ? 'Administration' : 'Human Resources';
+        }
+        
+        // Modal Functions
+        function showAddUserModal() {
+            const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
+            modal.show();
+        }
+        
+        function showEditUserModal(userId) {
+            document.getElementById('editUserId').value = userId;
+            const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
+            modal.show();
+        }
+        
+        function showAddEmployeeModal() {
+            const modal = new bootstrap.Modal(document.getElementById('addEmployeeModal'));
+            modal.show();
+        }
+        
+        function showApplyLeaveModal() {
+            // Set default dates
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('leaveStartDate').value = today;
+            document.getElementById('leaveEndDate').value = today;
+            
+            const modal = new bootstrap.Modal(document.getElementById('applyLeaveModal'));
+            modal.show();
+        }
+        
+        // Action Functions
+        async function clockInOut() {
+            try {
+                // Mock API call
+                alert('Attendance recorded successfully!');
+                loadAttendance();
+            } catch (error) {
+                alert('Error recording attendance: ' + error.message);
+            }
+        }
+        
+        async function addUser(email, password, role) {
+            try {
+                // Mock API call
+                alert('User created successfully!');
+                loadUsers();
+                bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
+            } catch (error) {
+                alert('Error creating user: ' + error.message);
+            }
+        }
+        
+        async function editUser(userId) {
+            showEditUserModal(userId);
+        }
+        
+        async function updateUser(userId, role, password) {
+            try {
+                // Mock API call
+                alert('User updated successfully!');
+                loadUsers();
+                bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide();
+            } catch (error) {
+                alert('Error updating user: ' + error.message);
+            }
+        }
+        
+        async function addEmployee(userId, departmentId) {
+            try {
+                // Mock API call
+                alert('Employee created successfully!');
+                loadEmployees();
+                bootstrap.Modal.getInstance(document.getElementById('addEmployeeModal')).hide();
+            } catch (error) {
+                alert('Error creating employee: ' + error.message);
+            }
+        }
+        
+        async function applyLeave(typeId, startDate, endDate) {
+            try {
+                // Mock API call
+                alert('Leave application submitted successfully!');
+                loadLeaveRequests();
+                bootstrap.Modal.getInstance(document.getElementById('applyLeaveModal')).hide();
+            } catch (error) {
+                alert('Error applying for leave: ' + error.message);
+            }
+        }
+        
+        async function approveLeave(requestId) {
+            try {
+                // Mock API call
+                alert('Leave approved successfully!');
+                loadLeaveRequests();
+            } catch (error) {
+                alert('Error approving leave: ' + error.message);
+            }
+        }
+        
+        async function generatePayroll(month, structureId) {
+            try {
+                // Mock API call
+                alert('Payroll generated successfully!');
+                loadPayroll();
+            } catch (error) {
+                alert('Error generating payroll: ' + error.message);
+            }
+        }
+        
+        // Event Listeners
+        document.getElementById('loginFormElement').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            login(email, password);
+        });
+        
+        document.getElementById('registerFormElement').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const companyName = document.getElementById('companyName').value;
+            const adminEmail = document.getElementById('adminEmail').value;
+            const adminPassword = document.getElementById('adminPassword').value;
+            registerCompany(companyName, adminEmail, adminPassword);
+        });
+        
+        document.getElementById('addUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('newUserEmail').value;
+            const password = document.getElementById('newUserPassword').value;
+            const role = document.getElementById('newUserRole').value;
+            addUser(email, password, role);
+        });
+        
+        document.getElementById('editUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userId = document.getElementById('editUserId').value;
+            const role = document.getElementById('editUserRole').value;
+            const password = document.getElementById('editUserPassword').value;
+            updateUser(userId, role, password || null);
+        });
+        
+        document.getElementById('addEmployeeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userId = document.getElementById('employeeUserId').value;
+            const departmentId = document.getElementById('employeeDepartmentId').value;
+            addEmployee(userId, departmentId);
+        });
+        
+        document.getElementById('applyLeaveForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const typeId = document.getElementById('leaveType').value;
+            const startDate = document.getElementById('leaveStartDate').value;
+            const endDate = document.getElementById('leaveEndDate').value;
+            applyLeave(typeId, startDate, endDate);
+        });
+        
+        document.getElementById('generatePayrollForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const month = document.getElementById('payrollMonth').value;
+            const structureId = document.getElementById('salaryStructure').value;
+            generatePayroll(month, structureId);
+        });
+        
+        // Utility Functions
+        function viewEmployeeProfile(employeeId) {
+            alert(`Viewing profile for employee ${employeeId}`);
+            // In a real app, this would navigate to the employee profile
+        }
+        
+        function loadCompanyInfo() {
+            document.getElementById('companyInfo').innerHTML = `
+                <p><strong>Company ID:</strong> COM001</p>
+                <p><strong>Name:</strong> ${currentUser.email.split('@')[1].split('.')[0].toUpperCase()} Inc.</p>
+                <p><strong>Total Employees:</strong> 45</p>
+                <p><strong>Active Since:</strong> 2023-01-01</p>
+            `;
+        }
+        
+        function loadPayroll() {
+            // Mock payroll data
+            const mockPayroll = [
+                { payroll_id: 1, month: '2024-01', employee_count: 45, total_amount: '$85,420', status: 'PROCESSED' },
+                { payroll_id: 2, month: '2023-12', employee_count: 42, total_amount: '$81,500', status: 'PROCESSED' }
+            ];
+            
+            const tbody = document.getElementById('payrollHistory');
+            tbody.innerHTML = '';
+            
+            mockPayroll.forEach(payroll => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${payroll.payroll_id}</td>
+                    <td>${payroll.month}</td>
+                    <td>${payroll.employee_count}</td>
+                    <td>${payroll.total_amount}</td>
+                    <td><span class="badge bg-success">${payroll.status}</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+    </script>
 </body>
 </html>
